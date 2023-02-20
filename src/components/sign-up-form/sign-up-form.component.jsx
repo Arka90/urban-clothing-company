@@ -1,4 +1,4 @@
-import { async } from "@firebase/util";
+// import { async } from "@firebase/util";
 import { useState } from "react";
 import {
   createAuthUserWithEmailAndPassword,
@@ -50,6 +50,8 @@ const SignUpForm = () => {
   return (
     <div className="sign-up-container">
       <h2>Dont have an account?</h2>
+      <span>Sign up with your email and password</span>
+
       <form onSubmit={handelSubmit}>
         <FormInput
           label="Display Name"
