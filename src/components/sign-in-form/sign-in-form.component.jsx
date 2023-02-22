@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 
 import FormInput from "../form-input/form-input.component";
 import Button from "../button/button.component";
@@ -24,7 +24,11 @@ const SignInForm = () => {
     event.preventDefault();
 
     try {
-      await signInAuthUserWithEmailAndPassword(email, password);
+      const { user } = await signInAuthUserWithEmailAndPassword(
+        email,
+        password
+      );
+
       resetFormFields();
     } catch (error) {
       if (error.code === "auth/wrong-password") {
@@ -46,8 +50,7 @@ const SignInForm = () => {
   };
 
   const signInWithGoogle = async () => {
-    const { user } = await sinInWithGooglePopup();
-    await createUserDocumentFromAuth(user);
+    await sinInWithGooglePopup();
   };
 
   return (
