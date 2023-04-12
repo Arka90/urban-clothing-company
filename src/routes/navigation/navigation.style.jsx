@@ -26,20 +26,3 @@ export const NavLink = styled(Link)`
   padding: 10px 15px;
   cursor: pointer;
 `;
-
-// .navigation {
-
-//   .logo-container {
-//     height: 100%;
-//     width: 70px;
-//     padding: 25px;
-//   }
-
-//   .nav-links-container {
-
-//     .nav-link {
-//       padding: 10px 15px;
-//       cursor: pointer;
-//     }
-//   }
-// }

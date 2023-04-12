@@ -1,87 +1,80 @@
-import { useState, useContext } from "react";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
 
 import FormInput from "../form-input/form-input.component";
 import Button, { BUTTON_TYPE_CLASSES } from "../button/button.component";
 
-import {
-  sinInWithGooglePopup,
-  createUserDocumentFromAuth,
-  signInAuthUserWithEmailAndPassword,
-} from "../../utils/firebase/firebase.utils";
-
 import { SignInContainer, ButtonsContainer } from "./sign-in-form.style";
+import {
+  googleSignInStart,
+  emailSignInStart,
+} from "../../store/user/user.action";
 
-const defaultFormField = {
+const defaultFormFields = {
   email: "",
   password: "",
 };
 
 const SignInForm = () => {
-  const [formFields, setFormFields] = useState(defaultFormField);
+  const dispatch = useDispatch();
+  const [formFields, setFormFields] = useState(defaultFormFields);
   const { email, password } = formFields;
 
-  const handelSubmit = async (event) => {
-    event.preventDefault();
-
-    try {
-      const { user } = await signInAuthUserWithEmailAndPassword(
-        email,
-        password
-      );
-
-      resetFormFields();
-    } catch (error) {
-      if (error.code === "auth/wrong-password") {
-        alert("Incorrect password for email");
-      } else if (error.code === "auth/user-not-found") {
-        alert("No user exists");
-      }
-      console.log(error);
-    }
-  };
-
   const resetFormFields = () => {
-    setFormFields(defaultFormField);
-  };
-
-  const handelChange = (event) => {
-    const { name, value } = event.target;
-    setFormFields({ ...formFields, [name]: value });
+    setFormFields(defaultFormFields);
   };
 
   const signInWithGoogle = async () => {
-    await sinInWithGooglePopup();
+    dispatch(googleSignInStart());
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    try {
+      dispatch(emailSignInStart(email, password));
+      resetFormFields();
+    } catch (error) {
+      console.log("user sign in failed", error);
+    }
+  };
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+
+    setFormFields({ ...formFields, [name]: value });
   };
 
   return (
     <SignInContainer>
-      <h2>Alredy have an account?</h2>
+      <h2>Already have an account?</h2>
       <span>Sign in with your email and password</span>
-      <form onSubmit={handelSubmit}>
+      <form onSubmit={handleSubmit}>
         <FormInput
           label="Email"
-          type="text"
+          type="email"
           required
-          value={email}
+          onChange={handleChange}
           name="email"
-          onChange={handelChange}
+          value={email}
         />
+
         <FormInput
           label="Password"
           type="password"
           required
-          value={password}
+          onChange={handleChange}
           name="password"
-          onChange={handelChange}
+          value={password}
         />
         <ButtonsContainer>
-          <Button>SIGN IN</Button>
+          <Button type="submit">Sign In</Button>
           <Button
+            buttonType={BUTTON_TYPE_CLASSES.google}
             type="button"
             onClick={signInWithGoogle}
-            buttonType={BUTTON_TYPE_CLASSES.google}
           >
-            Google Sign In
+            Sign In With Google
           </Button>
         </ButtonsContainer>
       </form>
